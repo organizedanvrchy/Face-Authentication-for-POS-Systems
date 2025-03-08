@@ -45,7 +45,7 @@ SEED = 42
 ## Running the Code
 To execute the authentication pipeline, run:
 ```bash
-python face_auth.py
+python CelebA.py
 ```
 This will:
 1. Load and balance the dataset.
