@@ -3,7 +3,7 @@
 This project implements a face authentication system using the Facenet model for feature extraction and a neural network classifier for authentication. The system evaluates the effectiveness of face recognition in payment systems across POS devices and mobile platforms.
 
 ## Features
-- Loads and balances the CelebA dataset for face authentication.
+- Loads and balances the CelebA dataset for face authentication (Dataset not included to avoid any copyright or distributionn issues).
 - Uses Facenet to extract deep face embeddings.
 - Implements a neural network model for authentication.
 - Evaluates performance using accuracy, FAR (False Acceptance Rate), and FRR (False Rejection Rate).
