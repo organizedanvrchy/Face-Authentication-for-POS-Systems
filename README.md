@@ -69,7 +69,7 @@ Finally, while not the core focus of this paper, privacypreserving techniques in
 The current implementation of the face authentication system demonstrates a strong ability to reject impostor attempts, as evidenced by the 0.00% False Acceptance Rate (FAR) and near-perfect accuracy of 99.41% (shown in Figure 1 below). This level of security against unauthorized access is critical in high-risk applications such as point-of-sale (POS) systems or mobile payment platforms.
 
 <p align="center">
-<img src="https://github.com/organizedanvrchy/Face-Authentication-for-POS-Systems/blob/main/Results/Old_Result/Iter1_Run1_CF.png?raw=true"/>
+<img src="https://github.com/organizedanvrchy/Face-Authentication-for-POS-Systems/blob/main/Results/Old_Result/Iter1_Run1_CF.png?raw=true" width=575/>
 </p>
 
 **Figure 1.** Resultant Confusion Matrix of 1st Iteration of Face Authentication System with proposed enhancements
@@ -77,7 +77,7 @@ The current implementation of the face authentication system demonstrates a stro
 The current system achieves this robustness using ArcFace embeddings combined with a One-Class SVM trained solely on a single authorized identity (ID 2880). The preprocessing pipeline applies several augmentation techniques to improve robustness under varying conditions, including blur, occlusion, noise, and lighting changes (shown in Figure 2 below).
 
 <p align="center">
-<img src="https://github.com/organizedanvrchy/Face-Authentication-for-POS-Systems/blob/main/Results/Old_Result/Iter1_Run1_AUG.png?raw=true"/>
+<img src="https://github.com/organizedanvrchy/Face-Authentication-for-POS-Systems/blob/main/Results/Old_Result/Iter1_Run1_AUG.png?raw=true" width=800/>
 </p>
 
 **Figure 2.** Example of Image Augmentation during Preprocessing
