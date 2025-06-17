@@ -128,23 +128,46 @@ The updated face authentication model demonstrates significant improvements in b
 
 This newer pipeline achieves improved performance through hardware-aware training optimization, realistic data augmentation, robust feature extraction with state-of-the-art embeddings, enhanced classifier architecture with regularization and class balancing, and complementary use of anomaly detection. These improvements (from the previous model) collectively strengthen this model's resilience and accuracy in face authentication tasks, positioning it as a viable solution for real-world biometric security applications.
 
-**Results Summary (5 Runs):**
+### Results Summary
+  
+| Run     | Ensemble Accuracy | AUC Score | FAR     | FRR |
+| ------- | ----------------- | --------- | ------- | --- |
+| Best    | 100%              | 1.000     | 0%      | 0%  |
+| Worst   | 93.13%            | 0.988     | 6.92%   | 0%  |
+| Average | \~97.7%           | \~0.998   | \~1.14% | 0%  |
 
-* Best: 100% Ensemble Accuracy, AUC 1.000, FAR 0%, FRR 0%.
-* Worst: 93.13% Accuracy, AUC 0.988, FAR 6.92%, FRR 0%.
-* Average: \~97.7% Ensemble Accuracy, AUC \~0.998, FAR \~1.14%, FRR 0%.
+**Figure 7.**  Table showing summary of results across 5 runs, indicating a significant improvement in security and usability, achieving near-perfect spoof resistance while balancing accessibility for authorized users.
 
 ---
 
 ## V. Future Work
 
-Key avenues for improvement include:
+To conclude, this project demonstrates how combining modern deep metric learning with ensemble-based anomaly detection can address real-world challenges in face authentication — balancing security and usability for payment applications.
 
-* **Scalability:** Replace One-Class SVM with **Autoencoders** or **Deep SVDD** ([19](#references), [20](#references)) for large datasets.
-* **Multi-user support:** Transition from one-class to multi-class or hybrid architectures.
-* **Advanced augmentation:** Use **GANs** for realistic variations.
-* **Liveness detection:** Integrate motion or depth-based presentation attack detection.
-* **Domain-specific fine-tuning:** Apply contrastive learning or fine-tune ArcFace on POS datasets.
+Although the system achieved strong performance with the current system, there are several areas to be explored for future improvements:
+
+**First**, the current system uses a One-Class SVM for anomaly detection on high-dimensional ArcFace embeddings. While effective, One-Class SVMs may not scale well as dataset size and complexity grow. I intend to replace the One-Class SVM with more scalable deep learning-based anomaly detection models such as **Autoencoders** or **Deep SVDD**.
+
+* With **Autoencoders**, the model can be trained to reconstruct normal authorized user embeddings and use reconstruction error as a proxy for anomaly detection. Unauthorized faces, or spoof attacks, would yield high reconstruction errors.
+* With **Deep SVDD**, a compact hypersphere can be used in embedding space that tightly encloses authorized embeddings, such that any embedding falling outside this sphere can be flagged as an impostor attempt \[[19](#references)], \[[20](#references)].
+
+Both of these approaches offer advantages for handling high-dimensional ArcFace embeddings, provide better scalability, and can capture more complex non-linear distributions in the authorized class.
+
+**Second**, extend the system to support **multiple authorized users**. In many real-world scenarios, such as shared POS terminals or family-shared mobile devices, multiple users need access. Adding multi-user support would require developing **hybrid architectures** that combine multi-class classification with anomaly detection principles. This allows distinguishing among authorized users while retaining the ability to reject novel impostors or spoofing attacks.
+
+**Third**, the **data augmentation pipeline** could be further enhanced using **Generative Adversarial Networks (GANs)**. GANs can generate highly realistic synthetic facial images, introducing extreme variations in pose, lighting, occlusion, and spoofing conditions. Training on such diverse synthetic data could improve the model's robustness and generalization to challenging real-world environments.
+
+**Fourth**, integrate **liveness detection** techniques to address spoofing threats such as photo or video replay attacks. Potential approaches include:
+
+* **Motion cues:** Detecting small involuntary facial movements like blinking or micro-expressions.
+* **Depth estimation:** Using monocular depth inference or structured light sensors to verify 3D facial structure.
+* **Multi-modal sensor integration:** Combining visual, infrared, and time-of-flight (ToF) sensors to verify live presence.
+
+These liveness detection methods will further strengthen resistance to presentation attacks, which are a major vulnerability in biometric systems.
+
+**Finally**, switching from **TensorFlow to PyTorch** for future development. PyTorch offers a much more flexible and intuitive development experience. Its dynamic computation graph makes experimentation and debugging significantly easier—especially valuable as this independent research and prototyping develop.
+
+Additionally, TensorFlow often lags behind in supporting newer versions of Python, CUDA, and other system dependencies, which complicates environment management. PyTorch maintains much tighter alignment with the latest versions of Python and related libraries, which will simplify maintenance, deployment, and scalability as the system continues to evolve.
 
 ---
 
