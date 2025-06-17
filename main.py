@@ -39,7 +39,7 @@ except Exception as e:
 # ===============================
 # Configurations
 # ===============================
-CELEBA_DIR = "/home/vimal/Documents/CIS735/Research/CelebA"
+CELEBA_DIR = "REPLACE/WITH/YOUR/FILE/PATH" # Ex. "Documents/Research/CelebA"
 IMG_SIZE = (112, 112)
 BATCH_SIZE = 64
 AUTHORIZED_IDS = [2880]
