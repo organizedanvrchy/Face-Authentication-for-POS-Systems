@@ -1,8 +1,11 @@
 # Ensemble-Based Face Authentication for Secure POS Transactions: ArcFace, One-Class SVM, and Neural Networks
 
 **Author:** Vimal Ramnarain
+
 **Institution:** Syracuse University, College of Engineering and Computer Science
+
 **Location:** Syracuse, US
+
 **Email:** [vimalramnarain@gmail.com](mailto:vimalramnarain@gmail.com)
 
 ---
@@ -43,6 +46,7 @@ Finally, **data augmentation** remains a proven strategy to improve generalizati
 ---
 
 ## III. Experiment Design
+
 This research proposes the development of a more robust and secure face authentication system for POS and Mobile Payments by building upon the limitations observed in prior research. The proposed system integrates/replaces the following components into the prior system:
   1. ArcFace Model: For face embedding extraction, which provides highly discriminative features for face recognition. The model is pre-trained on large-scale datasets, making it well-suited for accurate identity matching.
   2. One-Class Classification (OCC): To detect anomalies or spoof attempts, One-Class SVM will be employed to model the distribution of authorized users' embeddings. The OCC model will classify unknown faces as either normal (authorized) or abnormal (impostor/spoofed).
@@ -62,150 +66,67 @@ Finally, while not the core focus of this paper, privacypreserving techniques in
 
 ## IV. Performance Evaluation
 
-The current implementation of the face authentication system
-demonstrates a strong ability to reject impostor attempts, as
-evidenced by the 0.00% False Acceptance Rate (FAR) and nearperfect accuracy of 99.41% (shown in Figure 1 below). This level of
-security against unauthorized access is critical in high-risk
-applications such as point-of-sale (POS) systems or mobile payment
-platforms.
-Figure 1. Resultant Confusion Matrix of current Face
-Authentication System with proposed enhancements
-The current system achieves this robustness using ArcFace
-embeddings combined with a One-Class SVM trained solely on a
-single authorized identity (ID 2880). The preprocessing pipeline
-applies several augmentation techniques to improve robustness
-under varying conditions, including blur, occlusion, noise, and
-lighting changes (shown in Figure 2 below).
-Figure 2. Example of Image Augmentation during
-Preprocessing
-However, a major shortcoming is reflected in the False Rejection
-Rate (FRR), at 40.00%. This indicates that nearly half of the
-supposed “authorized” access attempts are mistakenly rejected. A
-high FRR can degrade the user experience and lead to frustration or
-system abandonment, and thus, must be handled. The root causes are
-multifold: the use of only one authorized user for training restricts
-the SVM's ability to generalize to intra-class variations; the data
-augmentation, while beneficial for robustness, is applied too
-aggressively, potentially distorting the feature space; and fallback
-embeddings of all-zero vectors during face detection failures can
-compromise both the training and evaluation phases.
-Page 3 of 5
-To address these limitations, the system is enhanced through a
-series of targeted improvements aimed at increasing generalization
-and reducing false rejections. These enhancements include refining
-the augmentation pipeline to balance robustness with feature
-integrity, improving face detection reliability to eliminate fallback
-embeddings, and incorporating ensemble evaluation (One-Class
-Support Vector Machine and Neural Network) across multiple runs
-to better capture performance consistency. The results from these
-improvements demonstrate a marked shift in the model’s ability to
-maintain high security while substantially improving user
-accessibility and classification performance, as detailed in the
-following evaluation.
-The updated face authentication pipeline incorporates several
-enhancements that contribute to improved robustness, accuracy, and
-computational efficiency compared to prior implementations. First,
-the integration of TensorFlow GPU configuration (moving away
-from the previous slow CPU configuration) with memory growth
-control ensures optimized hardware utilization by preventing
-memory pre-allocation bottlenecks. This dynamic GPU memory
-management enables the training process to scale efficiently with
-available resources, thus improving throughput during neural
-network optimization [9].
-The data augmentation pipeline, using the imgaug library [10],
-introduces a diverse set of realistic perturbations including additive
-Gaussian noise, Gaussian and motion blur, intensity scaling, and
-coarse dropout. These augmentations simulate real-world distortions
-such as sensor noise, motion artifacts, lighting variations, and
-occlusions. By exposing the model to such synthetic variations
-during training, the system enhances its generalization capability
-and robustness against adversarial conditions or spoofing attacks,
-which is critical in biometric authentication domains.
-Figure 3. Improved Image Augmentation using imgaug
-during Preprocessing of Run #1 with the updated model.
-From a dataset perspective, the pipeline employs class-balanced
-sampling strategies by enforcing minimum samples per authorized
-identity and random subsampling of impostor classes. This controls
-class imbalance inherent in face authentication datasets, somewhat
-balancing bias towards the dominant impostor class and improving
-the classifier's sensitivity and specificity. The stratified train-test
-split further preserves label distributions, thereby ensuring a reliable
-estimation of the model's true performance on unseen data [11].
-The feature extraction stage leverages the ArcFace model
-(buffalo_l variant) via the InsightFace framework [12], known for
-its discriminative 512-dimensional embeddings that map facial
-images to a hypersphere manifold with angular margin constraints.
-This approach significantly improves inter-class separability and
-intra-class compactness compared to traditional embeddings [13],
-allowing for more accurate downstream classification. Notably, the
-implementation includes rigorous checks for embedding validity,
-substituting zero vectors for failures to maintain consistent input
-dimensionality without introducing training bias.
-Figure 4. Training and Validation Accuracy achieved
-during Run #1 with the updated model.
-The classifier architecture is now a deep neural network with
-multiple dense layers, batch normalization [14], and dropout
-regularization [15]. Batch normalization accelerates training
-convergence and mitigates internal covariate shift, while dropout
-reduces overfitting by randomly deactivating neurons during
-training. The use of a sigmoid output layer with binary cross-entropy
-loss optimizes the model for the two-class (authorized vs impostor)
-problem, and class-weighting compensates for label imbalance by
-emphasizing the minority authorized class [16].
-Furthermore, the pipeline integrates a complementary One-Class
-Support Vector Machine (OC-SVM) [17] trained exclusively on
-authorized user embeddings to detect anomalous samples. This
-anomaly detection technique enhances spoof resistance by modeling
-the genuine user distribution without requiring negative examples,
-thus providing a principled way to reject impostors outside the
-learned feature manifold.
-Figure 5. Receiver Operator Characteristic graph achieved
-during Run #1 with the updated model.
-For evaluation, the system computes standard metrics including
-accuracy, Receiver Operator Characteristic (ROC-AUC) [18],
-confusion matrices, and class-specific FAR and FRR. These metrics
-offer comprehensive insight into the trade-offs between security
-(minimizing FAR) and usability (minimizing FRR). Visualizations
-of training progress (shown in Figure 4), ROC curves (shown in
-Figure 5 above), and confusion matrices (shown in Figure 6 below)
-support qualitative assessment and facilitate debugging and finetuning.
-Page 4 of 5
-Figure 6. Resultant Confusion Matrix achieved during Run
-#1 with the updated model.
-The updated face authentication model demonstrates significant
-improvements in both training stability and classification accuracy
-across multiple runs. Notably, across 5 runs, the best-performing
-epoch history shows the validation accuracy reaching as high as
-99.74%, with ensemble accuracy peaking at 100%, an AUC score of
-1.000, and both FAR and FRR effectively at 0%. This indicates
-nearly perfect recognition and spoof resistance under ideal
-conditions. Conversely, the worst observed run still achieves a
-respectable ensemble accuracy of 93.13% with an AUC of 0.988,
-although it exhibits a higher FAR of 6.92%, which signals some
-vulnerability to false acceptances in more challenging scenarios. On
-average, across the five runs, the model attains approximately 97.7%
-ensemble accuracy with AUC scores consistently near 0.998, FAR
-averaging around 1.14%, and FRR remaining at 0%. These metrics
-collectively highlight the robustness and generalization capability of
-the improved system, balancing low false acceptance with zero false
-rejections, and reflect the effectiveness of the enhancements such as
-data augmentation, ArcFace embeddings, and one-class anomaly
-detection incorporated in the pipeline.
-This newer pipeline achieves improved performance through
-hardware-aware training optimization, realistic data augmentation,
-robust feature extraction with state-of-the-art embeddings, enhanced
-classifier architecture with regularization and class balancing, and
-complementary use of anomaly detection. These improvements
-(from the previous model) collectively strengthen this model's
-resilience and accuracy in face authentication tasks, positioning it as
-a viable solution for real-world biometric security applications.
+The current implementation of the face authentication system demonstrates a strong ability to reject impostor attempts, as evidenced by the 0.00% False Acceptance Rate (FAR) and near-perfect accuracy of 99.41% (shown in Figure 1 below). This level of security against unauthorized access is critical in high-risk applications such as point-of-sale (POS) systems or mobile payment platforms.
 
-**Evaluation metrics:**
+<p align="center">
+<img src="https://github.com/organizedanvrchy/Face-Authentication-for-POS-Systems/blob/main/Results/Old_Result/Iter1_Run1_CF.png?raw=true"/>
+</p>
 
-* Accuracy
-* ROC-AUC ([18](#references))
-* Confusion matrices
-* FAR & FRR
+**Figure 1.** Resultant Confusion Matrix of 1st Iteration of Face Authentication System with proposed enhancements
+
+The current system achieves this robustness using ArcFace embeddings combined with a One-Class SVM trained solely on a single authorized identity (ID 2880). The preprocessing pipeline applies several augmentation techniques to improve robustness under varying conditions, including blur, occlusion, noise, and lighting changes (shown in Figure 2 below).
+
+<p align="center">
+<img src="https://github.com/organizedanvrchy/Face-Authentication-for-POS-Systems/blob/main/Results/Old_Result/Iter1_Run1_AUG.png?raw=true"/>
+</p>
+
+**Figure 2.** Example of Image Augmentation during Preprocessing
+
+However, a major shortcoming is reflected in the False Rejection Rate (FRR), at 40.00%. This indicates that nearly half of the supposed “authorized” access attempts are mistakenly rejected. A high FRR can degrade the user experience and lead to frustration or system abandonment, and thus, must be handled. The root causes are multifold: the use of only one authorized user for training restricts the SVM's ability to generalize to intra-class variations; the data augmentation, while beneficial for robustness, is applied too aggressively, potentially distorting the feature space; and fallback embeddings of all-zero vectors during face detection failures can compromise both the training and evaluation phases.
+
+To address these limitations, the system is enhanced through a series of targeted improvements aimed at increasing generalization and reducing false rejections. These enhancements include refining the augmentation pipeline to balance robustness with feature integrity, improving face detection reliability to eliminate fallback embeddings, and incorporating ensemble evaluation (One-Class Support Vector Machine and Neural Network) across multiple runs to better capture performance consistency. The results from these improvements demonstrate a marked shift in the model’s ability to maintain high security while substantially improving user accessibility and classification performance, as detailed in the following evaluation.
+
+The updated face authentication pipeline incorporates several enhancements that contribute to improved robustness, accuracy, and computational efficiency compared to prior implementations. First, the integration of TensorFlow GPU configuration (moving away from the previous slow CPU configuration) with memory growth control ensures optimized hardware utilization by preventing memory pre-allocation bottlenecks. This dynamic GPU memory management enables the training process to scale efficiently with available resources, thus improving throughput during neural network optimization \[[9](#references)].
+
+The data augmentation pipeline, using the imgaug library \[[10](#references)], introduces a diverse set of realistic perturbations including additive Gaussian noise, Gaussian and motion blur, intensity scaling, and coarse dropout. These augmentations simulate real-world distortions such as sensor noise, motion artifacts, lighting variations, and occlusions. By exposing the model to such synthetic variations during training, the system enhances its generalization capability and robustness against adversarial conditions or spoofing attacks, which is critical in biometric authentication domains.
+
+<p align="center">
+<img src="https://github.com/organizedanvrchy/Face-Authentication-for-POS-Systems/blob/main/Results/Run1/Image_1.png?raw=true"/>
+</p>
+
+**Figure 3.** Improved Image Augmentation using imgaug during Preprocessing of Run #1 with the updated model.
+
+From a dataset perspective, the pipeline employs class-balanced sampling strategies by enforcing minimum samples per authorized identity and random subsampling of impostor classes. This controls class imbalance inherent in face authentication datasets, somewhat balancing bias towards the dominant impostor class and improving the classifier's sensitivity and specificity. The stratified train-test split further preserves label distributions, thereby ensuring a reliable estimation of the model's true performance on unseen data \[[11](#references)].
+
+The feature extraction stage leverages the ArcFace model (buffalo\_l variant) via the InsightFace framework \[[12](#references)], known for its discriminative 512-dimensional embeddings that map facial images to a hypersphere manifold with angular margin constraints. This approach significantly improves inter-class separability and intra-class compactness compared to traditional embeddings \[[13](#references)], allowing for more accurate downstream classification. Notably, the implementation includes rigorous checks for embedding validity, substituting zero vectors for failures to maintain consistent input dimensionality without introducing training bias.
+
+<p align="center">
+<img src="https://github.com/organizedanvrchy/Face-Authentication-for-POS-Systems/blob/main/Results/Run1/Figure_1.png?raw=true"/>
+</p>
+
+**Figure 4.** Training and Validation Accuracy achieved during Run #1 with the updated model.
+
+The classifier architecture is now a deep neural network with multiple dense layers, batch normalization \[[14](#references)], and dropout regularization \[[15](#references)]. Batch normalization accelerates training convergence and mitigates internal covariate shift, while dropout reduces overfitting by randomly deactivating neurons during training. The use of a sigmoid output layer with binary cross-entropy loss optimizes the model for the two-class (authorized vs impostor) problem, and class-weighting compensates for label imbalance by emphasizing the minority authorized class \[[16](#references)].
+
+Furthermore, the pipeline integrates a complementary One-Class Support Vector Machine (OC-SVM) \[[17](#references)] trained exclusively on authorized user embeddings to detect anomalous samples. This anomaly detection technique enhances spoof resistance by modeling the genuine user distribution without requiring negative examples, thus providing a principled way to reject impostors outside the learned feature manifold.
+
+<p align="center">
+<img src="https://github.com/organizedanvrchy/Face-Authentication-for-POS-Systems/blob/main/Results/Run1/Figure_2.png?raw=true"/>
+</p>
+
+**Figure 5.** Receiver Operator Characteristic graph achieved during Run #1 with the updated model.
+
+For evaluation, the system computes standard metrics including accuracy, Receiver Operator Characteristic (ROC-AUC) \[[18](#references)], confusion matrices, and class-specific FAR and FRR. These metrics offer comprehensive insight into the trade-offs between security (minimizing FAR) and usability (minimizing FRR). Visualizations of training progress (shown in Figure 4), ROC curves (shown in Figure 5 above), and confusion matrices (shown in Figure 6 below) support qualitative assessment and facilitate debugging and fine-tuning.
+
+<p align="center">
+<img src="https://github.com/organizedanvrchy/Face-Authentication-for-POS-Systems/blob/main/Results/Run1/Figure_3.png?raw=true"/>
+</p>
+
+**Figure 6.** Resultant Confusion Matrix achieved during Run #1 with the updated model.
+
+The updated face authentication model demonstrates significant improvements in both training stability and classification accuracy across multiple runs. Notably, across 5 runs, the best-performing epoch history shows the validation accuracy reaching as high as 99.74%, with ensemble accuracy peaking at 100%, an AUC score of 1.000, and both FAR and FRR effectively at 0%. This indicates nearly perfect recognition and spoof resistance under ideal conditions. Conversely, the worst observed run still achieves a respectable ensemble accuracy of 93.13% with an AUC of 0.988, although it exhibits a higher FAR of 6.92%, which signals some vulnerability to false acceptances in more challenging scenarios. On average, across the five runs, the model attains approximately 97.7% ensemble accuracy with AUC scores consistently near 0.998, FAR averaging around 1.14%, and FRR remaining at 0%. These metrics collectively highlight the robustness and generalization capability of the improved system, balancing low false acceptance with zero false rejections, and reflect the effectiveness of the enhancements such as data augmentation, ArcFace embeddings, and one-class anomaly detection incorporated in the pipeline.
+
+This newer pipeline achieves improved performance through hardware-aware training optimization, realistic data augmentation, robust feature extraction with state-of-the-art embeddings, enhanced classifier architecture with regularization and class balancing, and complementary use of anomaly detection. These improvements (from the previous model) collectively strengthen this model's resilience and accuracy in face authentication tasks, positioning it as a viable solution for real-world biometric security applications.
 
 **Results Summary (5 Runs):**
 
